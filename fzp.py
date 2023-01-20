@@ -25,18 +25,19 @@ def phase_eq(x, y, x0, y0):
     return interp_phase
 
 
-def generate_phase_array(x0, y0):
+def generate_phase_array(center_width, center_height):
     '''
     generates a 1920x1080 array containing 8-bit grayscale pixels corresponding to phase values.
     pixel_pitch will be used to calculate phase for each pixel.
     
     Params: 
-        x0, y0: center coordinates of FZP. type: int
-        f: desired focal distance
+        center_width, center_height: center coordinates of FZP in pixel space. type: int
     Returns:
         phase_array: 1920x1080 array containing phase information
     '''
     arr = np.empty((1080, 1920))
+    x0 = pixel_pitch*center_width
+    y0 = pixel_pitch*center_height
 
     #probably a faster way to implement this
     for height in range(1080):
@@ -44,10 +45,12 @@ def generate_phase_array(x0, y0):
             x = pixel_pitch*width
             y = pixel_pitch*height
 
-            pixel_value = phase_eq(x, y, x0, y0)
+            pixel_value = round(phase_eq(x, y, x0, y0))
             arr[height, width] = pixel_value
 
-    return arr
+    phase_array = arr.astype(int)
+    return phase_array
 
-for i in range(1, 2000):
-    print(phase_eq(i, i, 512, 512))
+arr = generate_phase_array(960, 540) # centerarray test
+print(arr)
+#next up produce image
