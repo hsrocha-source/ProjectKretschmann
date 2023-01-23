@@ -48,9 +48,11 @@ def generate_phase_array(center_width, center_height):
             pixel_value = round(phase_eq(x, y, x0, y0))
             arr[height, width] = pixel_value
 
-    phase_array = arr.astype(int)
+    phase_array = np.uint8(arr)
     return phase_array
 
 arr = generate_phase_array(960, 540) # centerarray test
 print(arr)
+im = Image.fromarray(arr)
+im.save("test_fresnel.jpg")
 #next up produce image
