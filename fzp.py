@@ -33,17 +33,17 @@ def generate_phase_array(center_width, center_height):
     Params: 
         center_width, center_height: center coordinates of FZP in pixel space. type: int
     Returns:
-        phase_array: 1920x1080 array containing phase information
+        phase_array: 1920x1080 array containing phase information. type: uint8
     '''
     arr = np.empty((1080, 1920))
-    x0 = pixel_pitch*center_width
-    y0 = pixel_pitch*center_height
+    x0 = pixel_pitch * center_width
+    y0 = pixel_pitch * center_height
 
     #probably a faster way to implement this
     for height in range(1080):
         for width in range(1920):
-            x = pixel_pitch*width
-            y = pixel_pitch*height
+            x = pixel_pitch * width
+            y = pixel_pitch * height
 
             pixel_value = round(phase_eq(x, y, x0, y0))
             arr[height, width] = pixel_value
@@ -51,8 +51,31 @@ def generate_phase_array(center_width, center_height):
     phase_array = np.uint8(arr)
     return phase_array
 
-arr = generate_phase_array(960, 540) # centerarray test
-print(arr)
-im = Image.fromarray(arr)
-im.save("test_fresnel.jpg")
-#next up produce image
+
+
+# Translating the FZP moves the focal point in the focal plane by the corresponding distance. 
+
+def generate_angled_beam(theta):
+    '''
+    generates a fresnel zone plate for steering a beam by an angle theta using the SLM. vertical position is centered
+    
+    params:
+        theta: steering angle in degrees. type: float
+    returns: 
+        phase_array: 1920x1080 array containing phase information. type: uint8
+    '''
+
+    theta_rad = theta * 180 / np.pi
+
+    distance = focal_distance * np.tan(theta_rad)
+    pixel_shift = distance / pixel_pitch
+
+    phase_array = generate_phase_array(960 + pixel_shift, 540)
+
+    return phase_array
+
+# next up: test angled beam in sw. create sweeping routine. create a CLI for this file
+
+
+# im = Image.fromarray(arr)
+# im.save("test_fresnel.jpg")
