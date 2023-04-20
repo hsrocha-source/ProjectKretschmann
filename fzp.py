@@ -7,7 +7,7 @@ from PIL import Image
 
 pixel_pitch = 8 # distance between the pixels of the SLM
 lambda_ =  0.6328 # distance: wavelength of incident light on the SLM
-focal_distance = 900000 # desired focal distance (current: 0.9 m)
+focal_distance = 500000 # desired focal distance (current: 0.5 m)
 
 def phase_eq(x, y, x0, y0):
     ''' phase equation for a fresnel zone plate
@@ -74,7 +74,7 @@ def generate_angled_beam(theta):
 
     return phase_array
 
-# next up: test angled beam in sw. create sweeping routine. create a CLI for this file
+# next up: test angled beam in sw. create sweeping routine. create a CLI for this file. https://github.com/wavefrontshaping/slmPy
 
 
 # im = Image.fromarray(arr)
