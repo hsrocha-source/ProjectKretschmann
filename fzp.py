@@ -7,7 +7,9 @@ from PIL import Image
 
 pixel_pitch = 8 # distance between the pixels of the SLM
 lambda_ =  0.6328 # distance: wavelength of incident light on the SLM
-focal_distance = 500000 # desired focal distance (current: 0.5 m)
+focal_distance = 900000 # desired focal distance (current: 0.5 m)
+WIDTH = 1920
+HEIGHT = 1080
 
 def phase_eq(x, y, x0, y0):
     ''' phase equation for a fresnel zone plate
@@ -35,13 +37,13 @@ def generate_phase_array(center_width, center_height):
     Returns:
         phase_array: 1920x1080 array containing phase information. type: uint8
     '''
-    arr = np.empty((1080, 1920))
+    arr = np.empty((HEIGHT, WIDTH))
     x0 = pixel_pitch * center_width
     y0 = pixel_pitch * center_height
 
     #probably a faster way to implement this
-    for height in range(1080):
-        for width in range(1920):
+    for height in range(HEIGHT):
+        for width in range(WIDTH):
             x = pixel_pitch * width
             y = pixel_pitch * height
 
@@ -65,17 +67,18 @@ def generate_angled_beam(theta):
         phase_array: 1920x1080 array containing phase information. type: uint8
     '''
 
-    theta_rad = theta * 180 / np.pi
+    theta_rad = theta * np.pi / 180
 
     distance = focal_distance * np.tan(theta_rad)
     pixel_shift = distance / pixel_pitch
-
-    phase_array = generate_phase_array(960 + pixel_shift, 540)
+    print(pixel_shift)
+    phase_array = generate_phase_array(WIDTH/2 + pixel_shift, HEIGHT/2)
 
     return phase_array
 
 # next up: test angled beam in sw. create sweeping routine. create a CLI for this file. https://github.com/wavefrontshaping/slmPy
 
-
-# im = Image.fromarray(arr)
-# im.save("test_fresnel.jpg")
+for i in range(0,5):
+    arr = generate_angled_beam(i)
+    im = Image.fromarray(arr)
+    im.save("FZP_sweep_0_to_4/test_fresnel{}.jpg".format(i))
