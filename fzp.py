@@ -78,7 +78,11 @@ def generate_angled_beam(theta):
 
 # next up: test angled beam in sw. create sweeping routine. create a CLI for this file. https://github.com/wavefrontshaping/slmPy
 
-for i in range(0,5):
-    arr = generate_angled_beam(i)
-    im = Image.fromarray(arr)
-    im.save("FZP_sweep_0_to_4/test_fresnel{}.jpg".format(i))
+i = 0
+#last stop angle = 1.3853853853853855
+#last stop i = 692
+#next linspace range = 1000 - 691 = 309
+for angle in np.linspace(0, 2, 1000):
+    if i == 692:
+        print(i, angle)
+    i+=1
